@@ -1,0 +1,216 @@
+openapi: "3.0.3"
+info:
+  title: gotoserba API
+  description: A REST interface for state queries
+  version: "1.0"
+  contact:
+    name: support
+    email: lukivanz1@gmail.com
+    url: https://support.example.com/
+  license:
+    name: Apache2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: http://localhost:3000/api
+    description: deployment
+  - url: http://localhost:3001/api
+    description: production
+paths:
+  /category:
+    get:
+      tags:
+        - category
+      description: get all category
+      summary: queries all category
+      responses:
+        "200":
+          description: An example success response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                  status:
+                    type: string
+                  data:  
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Category"
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/ErrorModel"
+    post: 
+      tags:
+      - category
+      description: Create Category 
+      summary: create category 
+      requestBody:
+        description: create category
+        content:
+          application/json:
+            schema: 
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        "200":
+          description: success create category
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  code:
+                    type: number
+                  message:
+                    type: string
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/ErrorModel"
+
+  /product:
+    get:
+      tags:
+        - product
+      description: Get all product 
+      summary: queries all product
+      responses:
+        "200":
+          description: succet get all product
+          content:
+            application/json:
+              schema:  
+                type: object
+                properties:
+                  code:
+                    type: number
+                  status:
+                    type: string
+                  data:  
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/Product"
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/ErrorModel"
+    post: 
+      tags:
+        - product
+      description: create new product
+      summary: creata new product
+      requestBody:
+        description: create category example value
+        content:
+          application/json:
+            schema: 
+              type: object
+              properties:
+                name:
+                  type: string
+                description: 
+                  type: string
+                type:
+                  type: string
+                price:
+                  type: number
+                stock:
+                  type: number
+                image: 
+                  type: string
+                category: 
+                  type: string
+      responses:
+        "200":
+          description: An successful response.
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  code: 
+                    type: number
+                  status:
+                    type: string
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/ErrorModel"
+  /product/{productName}:
+    get:
+      tags:
+        - product
+      description: Get product by name
+      summary: queries name product
+      parameters:
+        - name: product name
+          in: path
+          description: product name to fetch
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: success get product
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/Product"
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/ErrorModel"
+                  
+components: 
+  schemas:
+    ErrorModel:
+      type: object
+      properties:
+        code:
+          type: number
+        error:
+          type: string
+        message:
+          type: string                
+    Category:
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string        
+    Product:
+      type: object
+      properties: 
+        name:
+          type: string
+        desc:
+          type: string
+        type:
+          type: string
+        price:
+          type: number
+        stock:
+          type: number
+        image:
+          type: string
+        category:
+          type: number
+        created_at:
+          type: string
