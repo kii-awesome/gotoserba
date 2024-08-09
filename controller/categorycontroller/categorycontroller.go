@@ -1,19 +1,19 @@
-package categorymodel
+package categorycontroller
 
 import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/kii-awesome/gotoserba/data"
-	"github.com/kii-awesome/gotoserba/entities"
+	"github.com/kii-awesome/gotoserba/models"
 )
 
 var db = data.ConnectDb()
 
 func GetAllCategory(ctx *gin.Context) {
-	var categories []entities.Category
-	result := db.Find(&categories)
+	var categories []models.Category
 
+	result := db.Find(&categories)
 	if result.Error != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"code": http.StatusBadRequest,
@@ -22,7 +22,7 @@ func GetAllCategory(ctx *gin.Context) {
 		})
 	}
 	
-	response := &entities.CategoryWebResponse{
+	response := &models.CategoryWebResponse{
         Code:   http.StatusOK,
         Status: "success",
         Data:   categories,
@@ -32,34 +32,32 @@ func GetAllCategory(ctx *gin.Context) {
 }
 
 func CreateCategory(ctx *gin.Context)  {
-	var data *entities.CategoryRequest
+	var request models.Category
 
-	// Mengikat badan permintaan json ke struktur badan permintaan
-	err := ctx.ShouldBindBodyWithJSON(&data)
+	err := ctx.ShouldBindBodyWithJSON(&request)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"code": http.StatusBadRequest,
 			"error": err.Error(),
-			"message": "Failed create category",
+			"message": "should with json format",
 		})
 	}
 
-	category := entities.Category{}
-	category.Name = data.Name
-
-	tx := db.Create(&category)
-	if tx.Error != nil {
+	result := db.Create(&models.Category{
+		Name:        request.Name,
+		Description: request.Description,
+	})
+	if result.Error != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": tx.Error,
+			"error": result.Error,
 			"code": http.StatusBadRequest,
 			"message": "failed to create category",
 		})
 		return
 	}
-	
-	var response entities.CategoryResponse
-	response.ID = uint(category.ID)
-	response.Name = category.Name
 
-	ctx.JSON(http.StatusCreated, response)
+	ctx.JSON(http.StatusCreated, gin.H{
+		"code":    http.StatusCreated,
+		"message": "succes create category",
+	})
 }

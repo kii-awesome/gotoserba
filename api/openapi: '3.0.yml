@@ -12,9 +12,11 @@ info:
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 servers:
   - url: http://localhost:3000/api
-    description: deployment
+    description: Dev
   - url: http://localhost:3001/api
-    description: production
+    description: Prod
+security:
+  - test: []
 paths:
   /category:
     get:
@@ -177,7 +179,12 @@ paths:
               schema: 
                 $ref: "#/components/schemas/ErrorModel"
                   
-components: 
+components:
+  securitySchemes:
+    test:
+      type: apiKey
+      name: apiKey
+      in: header
   schemas:
     ErrorModel:
       type: object

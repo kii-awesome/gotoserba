@@ -2,24 +2,25 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/kii-awesome/gotoserba/models/categorymodel"
-	"github.com/kii-awesome/gotoserba/models/productmodel"
+	"github.com/kii-awesome/gotoserba/controller/categorycontroller"
+	"github.com/kii-awesome/gotoserba/controller/productcontroller"
 )
 
 func Routes() {
 	gin.ForceConsoleColor()
-	
+
 	r := gin.Default()
 
 	// product
-	r.GET("/api/product", productmodel.GetAllProduct)
-	r.POST("/api/product", productmodel.CreateProduct)
-	r.GET("/api/product/:name", productmodel.GetProductByName)
-	
+	r.GET("/api/product", productcontroller.GetAllProduct)
+	r.POST("/api/product", productcontroller.CreateProduct)
+	r.GET("/api/product/:name", productcontroller.GetProductByName)
+	r.PUT("/api/product/edit/:name", productcontroller.EditProduct)
+	r.DELETE("api/product", productcontroller.DeleteProduct)
 	// category
-	r.GET("/api/category", categorymodel.GetAllCategory)
-	r.POST("/api/category", categorymodel.CreateCategory)
-	
+	r.GET("/api/category", categorycontroller.GetAllCategory)
+	r.POST("/api/category", categorycontroller.CreateCategory)
+
 	err := r.Run("localhost:3000")
 	if err != nil {
 		panic(err)
